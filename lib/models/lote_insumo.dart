@@ -1,3 +1,5 @@
+import '../utils/helpers.dart';
+
 class LoteInsumo {
   final int loteinsumoid;
   final int loteid;
@@ -27,10 +29,9 @@ class LoteInsumo {
       loteid: json['loteid'],
       insumoid: json['insumoid'],
       usuarioid: json['usuarioid'],
-      cantidadusada: (json['cantidadusada'] as num).toDouble(),
+      cantidadusada: parseDoubleRequired(json['cantidadusada']),
       fechauo: json['fechauo'],
-      costototal:
-          json['costototal'] != null ? (json['costototal'] as num).toDouble() : null,
+      costototal: parseDouble(json['costototal']),
       estadoloteinsumoid: json['estadoloteinsumoid'],
       observaciones: json['observaciones'],
     );

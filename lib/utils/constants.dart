@@ -63,4 +63,11 @@ class ApiConstants {
   // VENTAS
   // ======================================================
   static const String ventas = 'ventas';
+
+  // ======================================================
+  // API EXTERNA DE CLIMA
+  // ======================================================
+  static const String externalWeatherBase =
+      'https://api.openweathermap.org/data/2.5/weather';
+  static const String weatherApiKey = '740702a07c32f0410a7c6b869f1d1608';
 }

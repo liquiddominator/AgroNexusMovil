@@ -1,3 +1,5 @@
+import '../utils/helpers.dart';
+
 class Produccion {
   final int produccionid;
   final int loteid;
@@ -21,8 +23,7 @@ class Produccion {
     return Produccion(
       produccionid: json['produccionid'],
       loteid: json['loteid'],
-      cantidadkg:
-          json['cantidadkg'] != null ? (json['cantidadkg'] as num).toDouble() : null,
+      cantidadkg: parseDouble(json['cantidadkg']),
       fechacosecha: json['fechacosecha'],
       destinoproduccionid: json['destinoproduccionid'],
       imagenurl: json['imagenurl'],

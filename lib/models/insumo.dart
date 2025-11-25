@@ -1,3 +1,5 @@
+import '../utils/helpers.dart';
+
 class Insumo {
   final int insumoid;
   final String nombre;
@@ -27,12 +29,10 @@ class Insumo {
       nombre: json['nombre'],
       tipoinsumoid: json['tipoinsumoid'],
       unidadmedidaid: json['unidadmedidaid'],
-      stock: (json['stock'] as num).toDouble(),
-      stockminimo: (json['stockminimo'] as num).toDouble(),
+      stock: parseDoubleRequired(json['stock']),
+      stockminimo: parseDoubleRequired(json['stockminimo']),
       proveedor: json['proveedor'],
-      preciounitario: json['preciounitario'] != null
-          ? (json['preciounitario'] as num).toDouble()
-          : null,
+      preciounitario: parseDouble(json['preciounitario']),
       descripcion: json['descripcion'],
     );
   }

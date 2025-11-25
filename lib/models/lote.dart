@@ -1,3 +1,5 @@
+import '../utils/helpers.dart';
+
 class Lote {
   final int loteid;
   final int usuarioid;
@@ -35,12 +37,12 @@ class Lote {
       usuarioid: json['usuarioid'],
       nombre: json['nombre'],
       ubicacion: json['ubicacion'],
-      superficie: (json['superficie'] as num).toDouble(),
+      superficie: parseDoubleRequired(json['superficie']),
       cultivoid: json['cultivoid'],
       fechasiembra: json['fechasiembra'],
       estadolotetipoid: json['estadolotetipoid'],
-      latitud: json['latitud'] != null ? (json['latitud'] as num).toDouble() : null,
-      longitud: json['longitud'] != null ? (json['longitud'] as num).toDouble() : null,
+      latitud: parseDouble(json['latitud']),
+      longitud: parseDouble(json['longitud']),
       fechacreacion: json['fechacreacion'],
       fechamodificacion: json['fechamodificacion'],
       imagenurl: json['imagenurl'],

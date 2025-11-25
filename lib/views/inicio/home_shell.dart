@@ -23,7 +23,11 @@ class _AgroNexusHomeShellState extends State<AgroNexusHomeShell> {
   Widget _buildBody() {
     switch (_selected) {
       case AgroMenuItem.inicio:
-        return const DashboardPrincipalContent();
+        return DashboardPrincipalContent(
+          onQuickNav: (item) {
+            setState(() => _selected = item);
+          },
+        );
       case AgroMenuItem.lotes:
         return const MiListaLotesContent();
       case AgroMenuItem.produccion:

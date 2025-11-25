@@ -1,3 +1,5 @@
+import '../utils/helpers.dart';
+
 class Clima {
   final int climaid;
   final int loteid;
@@ -22,15 +24,9 @@ class Clima {
       climaid: json['climaid'],
       loteid: json['loteid'],
       fecha: json['fecha'],
-      temperatura: json['temperatura'] != null
-          ? (json['temperatura'] as num).toDouble()
-          : null,
-      humedad: json['humedad'] != null
-          ? (json['humedad'] as num).toDouble()
-          : null,
-      lluvia: json['lluvia'] != null
-          ? (json['lluvia'] as num).toDouble()
-          : null,
+      temperatura: parseDouble(json['temperatura']),
+      humedad: parseDouble(json['humedad']),
+      lluvia: parseDouble(json['lluvia']),
       observaciones: json['observaciones'],
     );
   }

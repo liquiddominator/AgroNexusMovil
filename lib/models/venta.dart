@@ -1,3 +1,5 @@
+import '../utils/helpers.dart';
+
 class Venta {
   final int ventaid;
   final int produccionid;
@@ -22,10 +24,8 @@ class Venta {
       ventaid: json['ventaid'],
       produccionid: json['produccionid'],
       cliente: json['cliente'],
-      cantidadkg:
-          json['cantidadkg'] != null ? (json['cantidadkg'] as num).toDouble() : null,
-      preciokg:
-          json['preciokg'] != null ? (json['preciokg'] as num).toDouble() : null,
+      cantidadkg: parseDouble(json['cantidadkg']),
+      preciokg: parseDouble(json['preciokg']),
       fechaventa: json['fechaventa'],
       observaciones: json['observaciones'],
     );

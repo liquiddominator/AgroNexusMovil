@@ -2,6 +2,11 @@ class ApiConstants {
   /// Base URL para el EMULADOR ANDROID (apunta al localhost de tu PC)
   static const String baseUrl = 'http://10.0.2.2:8000/api/';
 
+  // SUPABASE
+  static const String supabaseBucket = 'agronexus-bucket';
+  static const String supabaseLotesFolder = 'lotes';
+  static const String supabaseUsuariosFolder = 'usuarios';
+
   // ======================================================
   // Helper para construir URLs completas
   // ======================================================

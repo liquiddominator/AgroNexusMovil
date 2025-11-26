@@ -5,10 +5,15 @@ import 'package:agro_nexus_movil/views/encabezado/configuracion_screen.dart';
 import 'package:agro_nexus_movil/views/encabezado/notificaciones_screen.dart';
 import 'package:agro_nexus_movil/views/inicio/home_shell.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // 👇 NECESARIO PARA FECHAS EN ESPAÑOL (es_BO)
+  await initializeDateFormatting('es_BO', null);
 
   await Supabase.initialize(
     url: 'https://bsmobatqfjmrfiipkimu.supabase.co',
@@ -26,9 +31,23 @@ class AgroNexusApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AgroNexus',
+
+      // 👇 NECESARIO PARA showDatePicker Y LOCALES
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('es', 'BO'), // tu región
+        Locale('es', 'ES'),
+        Locale('en', 'US'),
+      ],
+
       theme: ThemeData(
         primaryColor: const Color(0xFF00796B),
       ),
+
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),

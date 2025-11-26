@@ -31,8 +31,12 @@ class LoteService {
 
     final response = await http.post(
       url,
-      headers: {'Authorization': 'Bearer $token'},
-      body: data,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(data), // ahora sí soporta int/double
     );
 
     return jsonDecode(response.body);
@@ -44,8 +48,12 @@ class LoteService {
 
     final response = await http.put(
       url,
-      headers: {'Authorization': 'Bearer $token'},
-      body: data,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(data),
     );
 
     return jsonDecode(response.body);

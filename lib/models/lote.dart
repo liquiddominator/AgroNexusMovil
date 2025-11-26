@@ -11,7 +11,7 @@ class Lote {
   final int? estadolotetipoid;
   final double? latitud;
   final double? longitud;
-  final String fechacreacion;
+  final String? fechacreacion;        // <-- ahora opcional
   final String? fechamodificacion;
   final String? imagenurl;
 
@@ -26,7 +26,7 @@ class Lote {
     this.estadolotetipoid,
     this.latitud,
     this.longitud,
-    required this.fechacreacion,
+    this.fechacreacion,              // <-- ya no required
     this.fechamodificacion,
     this.imagenurl,
   });
@@ -35,7 +35,7 @@ class Lote {
     return Lote(
       loteid: json['loteid'],
       usuarioid: json['usuarioid'],
-      nombre: json['nombre'],
+      nombre: json['nombre'] ?? '',
       ubicacion: json['ubicacion'],
       superficie: parseDoubleRequired(json['superficie']),
       cultivoid: json['cultivoid'],
@@ -43,27 +43,9 @@ class Lote {
       estadolotetipoid: json['estadolotetipoid'],
       latitud: parseDouble(json['latitud']),
       longitud: parseDouble(json['longitud']),
-      fechacreacion: json['fechacreacion'],
-      fechamodificacion: json['fechamodificacion'],
-      imagenurl: json['imagenurl'],
+      fechacreacion: json['fechacreacion'] as String?,      // <-- seguro
+      fechamodificacion: json['fechamodificacion'] as String?,
+      imagenurl: json['imagenurl'] as String?,
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'loteid': loteid,
-      'usuarioid': usuarioid,
-      'nombre': nombre,
-      'ubicacion': ubicacion,
-      'superficie': superficie,
-      'cultivoid': cultivoid,
-      'fechasiembra': fechasiembra,
-      'estadolotetipoid': estadolotetipoid,
-      'latitud': latitud,
-      'longitud': longitud,
-      'fechacreacion': fechacreacion,
-      'fechamodificacion': fechamodificacion,
-      'imagenurl': imagenurl,
-    };
   }
 }

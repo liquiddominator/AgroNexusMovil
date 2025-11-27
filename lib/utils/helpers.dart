@@ -18,6 +18,27 @@ double parseDoubleRequired(dynamic v) {
   return 0.0;
 }
 
+String? parseFechaFlexible(dynamic value) {
+  if (value == null) return null;
+
+  // Ya viene como String (ISO de Laravel, por ejemplo)
+  if (value is String) return value;
+
+  // Viene como timestamp en milisegundos
+  if (value is int) {
+    try {
+      final dt = DateTime.fromMillisecondsSinceEpoch(value);
+      return dt.toIso8601String(); // "2025-10-27T00:00:00.000"
+    } catch (_) {
+      // Último recurso: lo devolvemos como texto
+      return value.toString();
+    }
+  }
+
+  // Cualquier otro tipo raro
+  return value.toString();
+}
+
 /// Convierte dinámicos a int? desde num o string.
 int? parseInt(dynamic v) {
   if (v == null) return null;

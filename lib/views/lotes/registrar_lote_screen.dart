@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:agro_nexus_movil/controllers/auth_controller.dart';
 import 'package:agro_nexus_movil/controllers/lote_controller.dart';
 import 'package:agro_nexus_movil/controllers/catalogos_controller.dart';
@@ -25,6 +27,9 @@ class _RegistrarLoteScreenState extends State<RegistrarLoteScreen> {
   final _ubicacionController = TextEditingController();
   final _superficieController = TextEditingController();
   final _fechaSiembraController = TextEditingController();
+
+  // ya no usaremos estos campos para escribir manualmente,
+  // pero los dejamos por si quieres mostrar texto luego.
   final _latitudController = TextEditingController();
   final _longitudController = TextEditingController();
 
@@ -45,10 +50,16 @@ class _RegistrarLoteScreenState extends State<RegistrarLoteScreen> {
   int? _estadoLoteTipoId;
   DateTime? _fechaSiembra;
 
+  // Mapa
+  GoogleMapController? _mapController;
+  LatLng _initialMapPos = const LatLng(-17.7833, -63.1821); // Santa Cruz
+  LatLng? _selectedLatLng; // aquí se guarda la ubicación elegida
+
   @override
   void initState() {
     super.initState();
     _cargarCatalogos();
+    _cargarUbicacionInicial();
   }
 
   Future<void> _cargarCatalogos() async {
@@ -82,6 +93,28 @@ class _RegistrarLoteScreenState extends State<RegistrarLoteScreen> {
     }
   }
 
+  Future<void> _cargarUbicacionInicial() async {
+    final loc = await LocationHelper.getUserLocation();
+    if (!mounted || loc == null || loc.latitude == null || loc.longitude == null) {
+      return;
+    }
+
+    final pos = LatLng(loc.latitude!, loc.longitude!);
+
+    setState(() {
+      _initialMapPos = pos;
+      _selectedLatLng = pos;
+      _latitudController.text = pos.latitude.toStringAsFixed(6);
+      _longitudController.text = pos.longitude.toStringAsFixed(6);
+    });
+
+    if (_mapController != null) {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(pos, 15),
+      );
+    }
+  }
+
   Future<void> _seleccionarFechaSiembra() async {
     final ahora = DateTime.now();
     final picked = await showDatePicker(
@@ -102,7 +135,7 @@ class _RegistrarLoteScreenState extends State<RegistrarLoteScreen> {
 
   Future<void> _usarUbicacionActual() async {
     final loc = await LocationHelper.getUserLocation();
-    if (loc == null) {
+    if (loc == null || loc.latitude == null || loc.longitude == null) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -111,9 +144,27 @@ class _RegistrarLoteScreenState extends State<RegistrarLoteScreen> {
       );
       return;
     }
+
+    final pos = LatLng(loc.latitude!, loc.longitude!);
+
     setState(() {
-      _latitudController.text = (loc.latitude ?? '').toString();
-      _longitudController.text = (loc.longitude ?? '').toString();
+      _selectedLatLng = pos;
+      _latitudController.text = pos.latitude.toStringAsFixed(6);
+      _longitudController.text = pos.longitude.toStringAsFixed(6);
+    });
+
+    if (_mapController != null) {
+      _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(pos, 15),
+      );
+    }
+  }
+
+  void _onMapTap(LatLng position) {
+    setState(() {
+      _selectedLatLng = position;
+      _latitudController.text = position.latitude.toStringAsFixed(6);
+      _longitudController.text = position.longitude.toStringAsFixed(6);
     });
   }
 
@@ -221,12 +272,9 @@ class _RegistrarLoteScreenState extends State<RegistrarLoteScreen> {
       return;
     }
 
-    final lat = _latitudController.text.trim().isEmpty
-        ? null
-        : double.tryParse(_latitudController.text.trim());
-    final lon = _longitudController.text.trim().isEmpty
-        ? null
-        : double.tryParse(_longitudController.text.trim());
+    // Latitud / longitud desde el mapa
+    final lat = _selectedLatLng?.latitude;
+    final lon = _selectedLatLng?.longitude;
 
     final body = <String, dynamic>{
       'usuarioid': usuario.usuarioid,
@@ -407,40 +455,76 @@ class _RegistrarLoteScreenState extends State<RegistrarLoteScreen> {
                           },
                         ),
                         const SizedBox(height: 16),
+
+                        // ================= MAPA PARA ELEGIR LAT/LON =================
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Ubicación del lote',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          height: 230,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: _selectedLatLng ?? _initialMapPos,
+                                zoom: 14,
+                              ),
+                              myLocationEnabled: true,
+                              myLocationButtonEnabled: false,
+                              markers: _selectedLatLng == null
+                                  ? {}
+                                  : {
+                                      Marker(
+                                        markerId: const MarkerId('lote_position'),
+                                        position: _selectedLatLng!,
+                                      ),
+                                    },
+                              onMapCreated: (controller) {
+                                _mapController = controller;
+                              },
+                              onTap: _onMapTap,
+
+                              // 👇 Esto hace que el mapa “gane” todos los gestos
+                              gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+                                Factory<OneSequenceGestureRecognizer>(
+                                  () => EagerGestureRecognizer(),
+                                ),
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
                         Row(
                           children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: _latitudController,
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                  decimal: true,
-                                ),
-                                decoration: const InputDecoration(
-                                  labelText: 'Latitud',
-                                ),
-                              ),
+                            ElevatedButton.icon(
+                              onPressed: _usarUbicacionActual,
+                              icon: const Icon(Icons.my_location),
+                              label: const Text('Usar mi ubicación'),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
-                              child: TextFormField(
-                                controller: _longitudController,
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                  decimal: true,
-                                ),
-                                decoration: const InputDecoration(
-                                  labelText: 'Longitud',
+                              child: Text(
+                                _selectedLatLng == null
+                                    ? 'Toca el mapa para elegir la ubicación del lote.'
+                                    : 'Lat: ${_latitudController.text}  ·  Lon: ${_longitudController.text}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade700,
                                 ),
                               ),
                             ),
-                            IconButton(
-                              onPressed: _usarUbicacionActual,
-                              icon: const Icon(Icons.my_location),
-                              tooltip: 'Usar mi ubicación',
-                            ),
                           ],
                         ),
+
                         const SizedBox(height: 16),
 
                         // --------- PICKER DE IMAGEN + PREVIEW ----------

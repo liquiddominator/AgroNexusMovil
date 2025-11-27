@@ -10,6 +10,7 @@ class ProduccionService {
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
       },
     );
 
@@ -24,6 +25,7 @@ class ProduccionService {
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
       },
     );
 
@@ -40,8 +42,10 @@ class ProduccionService {
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
-      body: data,
+      body: jsonEncode(data), // 👈 AQUÍ el cambio importante
     );
 
     return jsonDecode(response.body);
@@ -59,8 +63,10 @@ class ProduccionService {
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
-      body: data,
+      body: jsonEncode(data), // 👈 igual aquí
     );
 
     return jsonDecode(response.body);
@@ -74,6 +80,7 @@ class ProduccionService {
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
       },
     );
 

@@ -24,10 +24,10 @@ class Produccion {
       produccionid: json['produccionid'],
       loteid: json['loteid'],
       cantidadkg: parseDouble(json['cantidadkg']),
-      fechacosecha: json['fechacosecha'],
+      fechacosecha: parseFechaFlexible(json['fechacosecha']),
       destinoproduccionid: json['destinoproduccionid'],
-      imagenurl: json['imagenurl'],
-      observaciones: json['observaciones'],
+      imagenurl: json['imagenurl']?.toString(),
+      observaciones: json['observaciones']?.toString(),
     );
   }
 

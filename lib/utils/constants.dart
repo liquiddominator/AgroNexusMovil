@@ -4,8 +4,9 @@ class ApiConstants {
 
   // SUPABASE
   static const String supabaseBucket = 'agronexus-bucket';
-  static const String supabaseLotesFolder = 'lotes';
   static const String supabaseUsuariosFolder = 'usuarios';
+  static const String supabaseLotesFolder = 'lotes';
+  static const String supabaseProduccionesFolder = 'producciones';
 
   // ======================================================
   // Helper para construir URLs completas

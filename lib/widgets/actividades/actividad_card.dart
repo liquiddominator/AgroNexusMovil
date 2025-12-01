@@ -1,5 +1,6 @@
 import 'package:agro_nexus_movil/controllers/actividad_controller.dart';
 import 'package:agro_nexus_movil/controllers/auth_controller.dart';
+import 'package:agro_nexus_movil/controllers/lote_controller.dart';
 import 'package:agro_nexus_movil/models/actividad.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -7,11 +8,13 @@ import 'package:intl/intl.dart';
 class ActividadItem extends StatelessWidget {
   final Actividad actividad;
   final void Function(String mensaje) onDeleted;
+  final String loteNombre;
 
   const ActividadItem({
     super.key,
     required this.actividad,
     required this.onDeleted,
+    required this.loteNombre,
   });
 
   @override
@@ -82,12 +85,16 @@ class ActividadItem extends StatelessWidget {
 
                       Row(
                         children: [
-                          Icon(Icons.location_on,
-                              size: 16, color: Colors.grey.shade700),
+                          Icon(
+                            Icons.location_on,
+                            size: 16,
+                            color: Colors.grey.shade700,
+                          ),
                           const SizedBox(width: 4),
 
+                          /// 🔥 Mostramos el nombre del lote, no el ID
                           Text(
-                            "Lote ${actividad.loteid}",
+                            loteNombre,
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.grey.shade700,
@@ -112,11 +119,11 @@ class ActividadItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("PRIORIDAD",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.w600)),
+                const Text(
+                  "PRIORIDAD",
+                  style: TextStyle(
+                      fontSize: 12, color: Colors.grey, fontWeight: FontWeight.w600),
+                ),
                 const SizedBox(height: 6),
                 _ChipEstado(nombre: prioridadNombre, color: prioridadColor),
               ],
@@ -141,11 +148,13 @@ class ActividadItem extends StatelessWidget {
 
                 const Spacer(),
 
-                // -------- BOTÓN ELIMINAR --------
                 GestureDetector(
                   onTap: () => _confirmarEliminar(context),
-                  child: Icon(Icons.delete_outline,
-                      color: Colors.red.shade700, size: 26),
+                  child: Icon(
+                    Icons.delete_outline,
+                    color: Colors.red.shade700,
+                    size: 26,
+                  ),
                 ),
               ],
             ),
@@ -161,7 +170,7 @@ class ActividadItem extends StatelessWidget {
   void _confirmarEliminar(BuildContext context) {
     showDialog(
       context: context,
-      builder: (ctx) { // <- ctx es del diálogo, NO lo usaremos en eliminar
+      builder: (ctx) {
         return AlertDialog(
           title: const Text("Eliminar Actividad"),
           content: const Text("¿Seguro que deseas eliminar esta actividad?"),
@@ -174,7 +183,7 @@ class ActividadItem extends StatelessWidget {
               child: const Text("Eliminar", style: TextStyle(color: Colors.red)),
               onPressed: () async {
                 Navigator.pop(ctx);
-                await _eliminar(); // <- YA NO RECIBE CONTEXT
+                await _eliminar();
               },
             ),
           ],
@@ -207,21 +216,17 @@ class ActividadItem extends StatelessWidget {
     if (actividad.fechainicio == null) return "Sin fecha";
 
     final inicio = DateTime.tryParse(actividad.fechainicio!);
-    final fin = actividad.fechafin != null
-        ? DateTime.tryParse(actividad.fechafin!)
-        : null;
+    final fin = actividad.fechafin != null ? DateTime.tryParse(actividad.fechafin!) : null;
 
     if (inicio == null) return "Sin fecha";
 
     final formatoDia = DateFormat("d MMM", "es");
     final formatoHora = DateFormat("HH:mm", "es");
 
-    // 🔹 Caso: solo inicio
     if (fin == null) {
       return formatoDia.format(inicio);
     }
 
-    // 🔹 Caso: ambos son el mismo día
     final mismoDia = inicio.year == fin.year &&
         inicio.month == fin.month &&
         inicio.day == fin.day;
@@ -230,17 +235,15 @@ class ActividadItem extends StatelessWidget {
       final fecha = formatoDia.format(inicio);
       final horaInicio = formatoHora.format(inicio);
       final horaFin = formatoHora.format(fin);
-
       return "$fecha · $horaInicio - $horaFin";
     }
 
-    // 🔹 Caso: días diferentes
     return "${formatoDia.format(inicio)} - ${formatoDia.format(fin)}";
   }
 }
 
 ///////////////////////////////////////////////////////////////////////
-//              HELPERS DE PRIORIDAD Y TIPO ACTIVIDAD
+// HELPERS
 ///////////////////////////////////////////////////////////////////////
 
 String getPrioridadNombre(int id) {
@@ -289,15 +292,15 @@ String getNombreTipoActividad(int id) {
 Color getColorTipoActividad(int id) {
   switch (id) {
     case 1:
-      return Color(0xFF4CAF50);
+      return const Color(0xFF4CAF50);
     case 2:
-      return Color(0xFF2196F3);
+      return const Color(0xFF2196F3);
     case 3:
-      return Color(0xFFE53935);
+      return const Color(0xFFE53935);
     case 4:
-      return Color(0xFFFFB300);
+      return const Color(0xFFFFB300);
     case 5:
-      return Color(0xFF6D4C41);
+      return const Color(0xFF6D4C41);
     default:
       return Colors.grey;
   }

@@ -1,3 +1,4 @@
+import 'package:agro_nexus_movil/controllers/lote_controller.dart';
 import 'package:agro_nexus_movil/models/actividad.dart';
 import 'package:agro_nexus_movil/widgets/actividades/actividad_card.dart';
 import 'package:agro_nexus_movil/widgets/actividades/actividad_stat_card.dart';
@@ -18,6 +19,7 @@ class MisActividadesContent extends StatefulWidget {
 class _MisActividadesContentState extends State<MisActividadesContent> {
   final ActividadController _actividadController = ActividadController();
   final CatalogosController _catalogosController = CatalogosController();
+  final LoteController _loteController = LoteController();
 
   bool loading = true;
 
@@ -45,6 +47,7 @@ class _MisActividadesContentState extends State<MisActividadesContent> {
     await Future.wait([
       _actividadController.cargarActividades(token),
       _catalogosController.cargarCatalogos(token),
+      _loteController.cargarLotes(token),
     ]);
 
     final actividades = _actividadController.actividades;
@@ -102,8 +105,16 @@ class _MisActividadesContentState extends State<MisActividadesContent> {
           padding: const EdgeInsets.only(bottom: 20),
           child: ActividadItem(
             actividad: item,
+            loteNombre: (() {
+              for (final lote in _loteController.lotes) {
+                if (lote.loteid == item.loteid) {
+                  return lote.nombre;
+                }
+              }
+              return "Lote ${item.loteid}";
+            })(),
             onDeleted: (mensaje) {
-              setState(() {}); // refrescar lista
+              setState(() {});
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(mensaje)),
               );
@@ -135,7 +146,7 @@ class _MisActividadesContentState extends State<MisActividadesContent> {
         backgroundColor: Colors.white,
 
         child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(), // 🔥 necesario para permitir el pull even sin scroll
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [

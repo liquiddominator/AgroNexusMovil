@@ -2,39 +2,40 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../utils/constants.dart';
 
-class ActividadService {
-  Future<List<dynamic>> getActividades(String token) async {
-    final url = Uri.parse(ApiConstants.url(ApiConstants.actividades));
+class AlmacenService {
+  Future<List<dynamic>> getAlmacenes(String token) async {
+    final url = Uri.parse(ApiConstants.url(ApiConstants.almacenes));
 
     final response = await http.get(
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
       },
     );
 
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> getActividad(int id, String token) async {
-    final url =
-        Uri.parse(ApiConstants.url('${ApiConstants.actividades}/$id'));
+  Future<Map<String, dynamic>> getAlmacen(int id, String token) async {
+    final url = Uri.parse(ApiConstants.url('${ApiConstants.almacenes}/$id'));
 
     final response = await http.get(
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
       },
     );
 
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> createActividad(
+  Future<Map<String, dynamic>> createAlmacen(
     Map<String, dynamic> data,
     String token,
   ) async {
-    final url = Uri.parse(ApiConstants.url(ApiConstants.actividades));
+    final url = Uri.parse(ApiConstants.url(ApiConstants.almacenes));
 
     final response = await http.post(
       url,
@@ -49,33 +50,34 @@ class ActividadService {
     return jsonDecode(response.body);
   }
 
-  Future<Map<String, dynamic>> updateActividad(
+  Future<Map<String, dynamic>> updateAlmacen(
     int id,
     Map<String, dynamic> data,
     String token,
   ) async {
-    final url =
-        Uri.parse(ApiConstants.url('${ApiConstants.actividades}/$id'));
+    final url = Uri.parse(ApiConstants.url('${ApiConstants.almacenes}/$id'));
 
     final response = await http.put(
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
-      body: data,
+      body: jsonEncode(data),
     );
 
     return jsonDecode(response.body);
   }
 
-  Future<bool> deleteActividad(int id, String token) async {
-    final url =
-        Uri.parse(ApiConstants.url('${ApiConstants.actividades}/$id'));
+  Future<bool> deleteAlmacen(int id, String token) async {
+    final url = Uri.parse(ApiConstants.url('${ApiConstants.almacenes}/$id'));
 
     final response = await http.delete(
       url,
       headers: {
         'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
       },
     );
 

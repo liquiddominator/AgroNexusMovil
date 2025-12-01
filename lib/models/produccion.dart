@@ -4,6 +4,7 @@ class Produccion {
   final int produccionid;
   final int loteid;
   final double? cantidadkg;
+  final int? unidadmedidaid;
   final String? fechacosecha;
   final int? destinoproduccionid;
   final String? imagenurl;
@@ -13,6 +14,7 @@ class Produccion {
     required this.produccionid,
     required this.loteid,
     this.cantidadkg,
+    this.unidadmedidaid,
     this.fechacosecha,
     this.destinoproduccionid,
     this.imagenurl,
@@ -24,6 +26,7 @@ class Produccion {
       produccionid: json['produccionid'],
       loteid: json['loteid'],
       cantidadkg: parseDouble(json['cantidadkg']),
+      unidadmedidaid: json['unidadmedidaid'],
       fechacosecha: parseFechaFlexible(json['fechacosecha']),
       destinoproduccionid: json['destinoproduccionid'],
       imagenurl: json['imagenurl']?.toString(),
@@ -36,6 +39,7 @@ class Produccion {
       'produccionid': produccionid,
       'loteid': loteid,
       'cantidadkg': cantidadkg,
+      'unidadmedidaid': unidadmedidaid,
       'fechacosecha': fechacosecha,
       'destinoproduccionid': destinoproduccionid,
       'imagenurl': imagenurl,

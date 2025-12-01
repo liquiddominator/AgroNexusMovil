@@ -43,6 +43,7 @@ class _RegistrarProduccionScreenState
 
   int? _loteId;
   int? _destinoProduccionId;
+  int? _unidadMedidaId;
   DateTime? _fechaCosecha;
 
   // Imagen
@@ -242,6 +243,9 @@ class _RegistrarProduccionScreenState
           DateFormat('yyyy-MM-dd').format(_fechaCosecha!),
       'destinoproduccionid': _destinoProduccionId,
     };
+    if (_unidadMedidaId != null) {
+      body['unidadmedidaid'] = _unidadMedidaId;
+    }
 
     if (_observacionesController.text.trim().isNotEmpty) {
       body['observaciones'] = _observacionesController.text.trim();
@@ -491,9 +495,9 @@ Widget build(BuildContext context) {
 
                                   const SizedBox(height: 20),
 
-                                  // ================== CANTIDAD ==================
+                                  // ================== CANTIDAD + UNIDAD MEDIDA ==================
                                   Text(
-                                    'Cantidad Cosechada (kg) *',
+                                    'Cantidad Cosechada *',
                                     style: TextStyle(
                                       color: Colors.grey.shade700,
                                       fontSize: 13,
@@ -501,44 +505,80 @@ Widget build(BuildContext context) {
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  TextFormField(
-                                    controller: _cantidadController,
-                                    keyboardType:
-                                        const TextInputType.numberWithOptions(
-                                            decimal: true),
-                                    decoration: InputDecoration(
-                                      hintText: 'Ej: 580',
-                                      suffixIcon: Icon(
-                                        Icons.filter_frames,
-                                        color: Colors.grey.shade600,
-                                        size: 20,
-                                      ),
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 12),
-                                      border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
-                                      ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                          color: Colors.grey.shade400,
+
+                                  Row(
+                                    children: [
+                                      // ------- INPUT DE CANTIDAD -------
+                                      Expanded(
+                                        flex: 1,    // <-- ancho grande
+                                        child: TextFormField(
+                                          controller: _cantidadController,
+                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                          decoration: InputDecoration(
+                                            hintText: 'Ej: 580',
+                                            suffixIcon: Icon(
+                                              Icons.scale,
+                                              color: Colors.grey.shade600,
+                                              size: 20,
+                                            ),
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade400,
+                                              ),
+                                            ),
+                                          ),
+                                          validator: (v) {
+                                            if (v == null || v.trim().isEmpty) return 'Requerido';
+                                            final value = double.tryParse(v.trim());
+                                            if (value == null || value <= 0) return 'N° inválido';
+                                            return null;
+                                          },
                                         ),
                                       ),
-                                    ),
-                                    validator: (v) {
-                                      if (v == null || v.trim().isEmpty) {
-                                        return 'La cantidad es obligatoria';
-                                      }
-                                      final value =
-                                          double.tryParse(v.trim());
-                                      if (value == null || value <= 0) {
-                                        return 'Ingrese una cantidad válida';
-                                      }
-                                      return null;
-                                    },
+
+                                      const SizedBox(width: 12),
+
+                                      // ------- DROPDOWN UNIDAD DE MEDIDA -------
+                                      Expanded(
+                                        flex: 1,    // <-- ancho pequeño
+                                        child: DropdownButtonFormField<int>(
+                                          value: _unidadMedidaId,
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(10),
+                                              borderSide: BorderSide(
+                                                color: Colors.grey.shade400,
+                                              ),
+                                            ),
+                                          ),
+                                          items: _catalogosController.unidadesMedida
+                                              .map(
+                                                (u) => DropdownMenuItem<int>(
+                                                  value: u.unidadmedidaid,
+                                                  child: Text(u.nombre.toUpperCase()),
+                                                ),
+                                              )
+                                              .toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _unidadMedidaId = value;
+                                            });
+                                          },
+                                          validator: (v) => v == null ? 'Req.' : null,
+                                        ),
+                                      ),
+                                    ],
                                   ),
 
                                   const SizedBox(height: 20),

@@ -27,6 +27,29 @@ class CatalogosService {
   }
 
   // ==========================
+  // TIPO ALMACÉN
+  // ==========================
+
+  Future<List<dynamic>> getTipoAlmacenes(String token) async {
+    final url = Uri.parse(ApiConstants.url(ApiConstants.tipoAlmacenes));
+    final response = await http.get(
+      url,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    return jsonDecode(response.body);
+  }
+
+  Future<Map<String, dynamic>> getTipoAlmacen(int id, String token) async {
+    final url =
+        Uri.parse(ApiConstants.url('${ApiConstants.tipoAlmacenes}/$id'));
+    final response = await http.get(
+      url,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    return jsonDecode(response.body);
+  }
+
+  // ==========================
   // PRIORIDAD
   // ==========================
 

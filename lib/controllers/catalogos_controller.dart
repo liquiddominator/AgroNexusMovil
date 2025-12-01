@@ -2,6 +2,7 @@ import 'package:agro_nexus_movil/models/destino_produccion.dart';
 import 'package:agro_nexus_movil/models/estado_lote_insumo.dart';
 import 'package:agro_nexus_movil/models/estado_lote_tipo.dart';
 import 'package:agro_nexus_movil/models/tipo_actividad.dart';
+import 'package:agro_nexus_movil/models/tipo_almacen.dart';
 import 'package:agro_nexus_movil/models/tipo_insumo.dart';
 import 'package:agro_nexus_movil/models/unidad_medida.dart';
 import '../services/catalogos_service.dart';
@@ -22,6 +23,7 @@ class CatalogosController {
   List<EstadoLoteTipo> estadoLoteTipos = [];
   List<DestinoProduccion> destinoProducciones = [];
   List<EstadoLoteInsumo> estadoLoteInsumos = [];
+  List<TipoAlmacen> tipoAlmacenes = [];
 
   Future<bool> cargarCatalogos(String token) async {
     loading = true;
@@ -30,6 +32,10 @@ class CatalogosController {
     try {
       tipoActividades = (await _service.getTipoActividades(token))
           .map<TipoActividad>((json) => TipoActividad.fromJson(json))
+          .toList();
+      
+      tipoAlmacenes = (await _service.getTipoAlmacenes(token))
+          .map<TipoAlmacen>((json) => TipoAlmacen.fromJson(json))
           .toList();
 
       prioridades = (await _service.getPrioridades(token))

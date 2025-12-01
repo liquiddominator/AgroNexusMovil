@@ -23,7 +23,6 @@ class ApiConstants {
 
   // ======================================================
   // CATÁLOGOS
-  // (apiResource en api.php)
   // ======================================================
   static const String tipoActividades = 'tipoactividades';
   static const String prioridades = 'prioridades';
@@ -33,6 +32,7 @@ class ApiConstants {
   static const String estadoLoteTipos = 'estadolote-tipos';
   static const String destinoProducciones = 'destinoproducciones';
   static const String estadoLoteInsumos = 'estadolote-insumos';
+  static const String tipoAlmacenes = 'tipo-almacenes';
 
   // ======================================================
   // USUARIOS Y ROLES
@@ -48,6 +48,8 @@ class ApiConstants {
   static const String estadoLotes = 'estadolotes';
   static const String producciones = 'producciones';
   static const String historialEstadosLote = 'historial-estados-lote';
+  static const String almacenes = 'almacenes';
+  static const String produccionesAlmacenamiento = 'producciones-almacenamiento';
 
   // ======================================================
   // INSUMOS Y APLICACIONES

@@ -6,15 +6,17 @@ class LoteCard extends StatelessWidget {
   final Lote lote;
   final double produccionTotalKg;
   final String Function(String?) formateaFecha;
+  final String Function(int?) nombreCultivo;
   final (String, Color, Color) estadoBadge;
-  final VoidCallback? onTap; // <-- nuevo
+  final VoidCallback? onTap;
 
   const LoteCard({
     required this.lote,
     required this.produccionTotalKg,
     required this.formateaFecha,
     required this.estadoBadge,
-    this.onTap, // <-- nuevo
+    required this.nombreCultivo,
+    this.onTap,
   });
 
   @override
@@ -26,8 +28,9 @@ class LoteCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: onTap, // <-- tap en toda la card (menos en los IconButton)
+        onTap: onTap,
         child: Container(
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -39,142 +42,170 @@ class LoteCard extends StatelessWidget {
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Título + badge
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        lote.nombre,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              // ───────────────────────────────────────────────
+              // Fila superior: Nombre + Imagen
+              // ───────────────────────────────────────────────
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Nombre del lote
+                        Text(
+                          lote.nombre,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: bgColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: textColor,
+
+                        const SizedBox(height: 4),
+
+                        // Cultivo
+                        Text(
+                          'Cultivo: ${nombreCultivo(lote.cultivoid)}',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Cultivo: ${lote.cultivoid != null ? 'ID ${lote.cultivoid}' : 'Sin definir'}',
-                  style: const TextStyle(
-                    fontSize: 13,
-                    color: Colors.grey,
                   ),
-                ),
 
-                const SizedBox(height: 16),
-
-                // Superficie / Producción
-                Row(
-                  children: [
-                    Expanded(
-                      child: _StatItem(
-                        title: 'Superficie',
-                        value:
-                            '${numberFormatter.format(lote.superficie)} ha',
-                      ),
+                  // Imagen pequeña
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      width: 110,
+                      height: 70,
+                      color: Colors.grey.shade200,
+                      child: lote.imagenurl != null &&
+                              lote.imagenurl!.isNotEmpty
+                          ? Image.network(
+                              lote.imagenurl!,
+                              fit: BoxFit.cover,
+                            )
+                          : _placeholderImage(),
                     ),
-                    Expanded(
-                      child: _StatItem(
-                        title: 'Producción',
-                        value:
-                            '${numberFormatter.format(produccionTotalKg)} kg',
-                        alignEnd: true,
-                      ),
+                  )
+                ],
+              ),
+
+              const SizedBox(height: 12),
+
+              // ───────────────────────────────────────────────
+              // Superficie + Producción
+              // ───────────────────────────────────────────────
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatItem(
+                      title: "Superficie",
+                      value: "${numberFormatter.format(lote.superficie)} ha",
                     ),
-                  ],
-                ),
-
-                const SizedBox(height: 12),
-
-                // Fecha siembra
-                Text(
-                  'Siembra',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  formateaFecha(lote.fechasiembra),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                // Ubicación
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.location_on_outlined,
-                      size: 18,
-                      color: Colors.grey,
+                  Expanded(
+                    child: _StatItem(
+                      title: "Producción",
+                      value:
+                          "${numberFormatter.format(produccionTotalKg)} kg",
+                      alignEnd: true,
                     ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        lote.ubicacion ?? 'Ubicación no especificada',
-                        style: const TextStyle(
-                          fontSize: 12,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+
+              // ───────────────────────────────────────────────
+              // Siembra
+              // ───────────────────────────────────────────────
+              Text(
+                "Siembra",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                formateaFecha(lote.fechasiembra),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // ───────────────────────────────────────────────
+              // Ubicación + Estado (misma fila)
+              // ───────────────────────────────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Ubicación
+                  Expanded(
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on_outlined,
+                          size: 18,
                           color: Colors.grey,
                         ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            lote.ubicacion ?? "Ubicación no especificada",
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Estado
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: textColor,
                       ),
                     ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                // Botones
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      tooltip: 'Editar lote',
-                      icon: const Icon(Icons.edit_outlined),
-                      onPressed: () {
-                        // navegar a edición
-                      },
-                    ),
-                    IconButton(
-                      tooltip: 'Más opciones',
-                      icon: const Icon(Icons.more_vert),
-                      onPressed: () {
-                        // mostrar menú contextual
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _placeholderImage() {
+    return const Center(
+      child: Icon(
+        Icons.image_not_supported_outlined,
+        size: 40,
+        color: Colors.grey,
       ),
     );
   }
@@ -193,17 +224,13 @@ class _StatItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final align = alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-
     return Column(
-      crossAxisAlignment: align,
+      crossAxisAlignment:
+          alignEnd ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: 12,
-            color: Colors.grey.shade600,
-          ),
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
         ),
         const SizedBox(height: 2),
         Text(

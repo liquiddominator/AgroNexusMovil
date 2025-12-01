@@ -1,3 +1,4 @@
+import 'package:agro_nexus_movil/views/actividades/calendario_actividades_screen.dart';
 import 'package:agro_nexus_movil/views/actividades/misactividades_screen.dart';
 import 'package:agro_nexus_movil/views/clima/dashboard_climatico_screen.dart';
 import 'package:agro_nexus_movil/views/inicio/dashboard_principal_screen.dart';
@@ -116,41 +117,23 @@ class _AgroNexusHomeShellState extends State<AgroNexusHomeShell> {
                     ),
                   ),
 
-                  // Botón de notificaciones
-                  IconButton(
-                    icon: Stack(
-                      clipBehavior: Clip.none,
-                      children: [
-                        const Icon(Icons.notifications_none, color: primaryGreen, size: 26),
-                        Positioned(
-                          right: -1,
-                          top: -1,
-                          child: Container(
-                            width: 14,
-                            height: 14,
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Center(
-                              child: Text(
-                                '3',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                  // Botón de calendario (solo en Actividades)
+                  if (_selected == AgroMenuItem.actividades)
+                    IconButton(
+                      icon: const Icon(
+                        Icons.calendar_month,
+                        color: primaryGreen,
+                        size: 26,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CalendarioActividadesScreen(),
                           ),
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/notificaciones');
-                    },
-                  ),
-
                   // Botón de configuración
                   IconButton(
                     icon: const Icon(Icons.settings, color: primaryGreen, size: 26),

@@ -99,7 +99,7 @@ class _MisActividadesContentState extends State<MisActividadesContent> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (_, i) {
-        final item = actividades[i]; // <- AHORA SÍ existe "item"
+        final item = actividades[i];
 
         return Padding(
           padding: const EdgeInsets.only(bottom: 20),

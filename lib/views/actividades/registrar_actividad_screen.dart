@@ -191,7 +191,7 @@ class _RegistrarActividadScreenState extends State<RegistrarActividadScreen> {
     .toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F3F3),
+      backgroundColor: const Color(0xFFEEEEEE),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -1,4 +1,5 @@
 import 'package:agro_nexus_movil/controllers/catalogos_controller.dart';
+import 'package:agro_nexus_movil/models/cultivo.dart';
 import 'package:agro_nexus_movil/models/estado_lote_tipo.dart';
 import 'package:agro_nexus_movil/views/lotes/detalle_lote_screen.dart';
 import 'package:agro_nexus_movil/views/lotes/mapa_lotes_screen.dart';
@@ -102,6 +103,20 @@ class _MiListaLotesContentState extends State<MiListaLotesContent> {
     } catch (_) {
       return iso;
     }
+  }
+
+  String nombreCultivo(int? cultivoId) {
+    if (cultivoId == null) return "Sin definir";
+
+    final cultivo = catalogosController.cultivos.firstWhere(
+      (c) => c.cultivoid == cultivoId,
+      orElse: () => Cultivo(
+        cultivoid: 0,
+        nombre: "Cultivo $cultivoId",
+      ),
+    );
+
+    return cultivo.nombre;
   }
 
   (String, Color, Color) _estadoBadge(int? estadoId) {
@@ -377,6 +392,7 @@ class _MiListaLotesContentState extends State<MiListaLotesContent> {
                                   produccionTotalKg: produccionTotal,
                                   formateaFecha: _formateaFecha,
                                   estadoBadge: _estadoBadge(lote.estadolotetipoid),
+                                  nombreCultivo: nombreCultivo,  
                                   onTap: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(

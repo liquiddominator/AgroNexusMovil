@@ -23,7 +23,6 @@ class MiListaLotesContent extends StatefulWidget {
 class _MiListaLotesContentState extends State<MiListaLotesContent> {
   final _loteController = LoteController();
   final _produccionController = ProduccionController();
-  final catalogosController = CatalogosController();
 
   bool _loading = true;
   String? _error;

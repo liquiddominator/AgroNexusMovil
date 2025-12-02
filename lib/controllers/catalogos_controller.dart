@@ -75,3 +75,4 @@ class CatalogosController {
     }
   }
 }
+final CatalogosController catalogosController = CatalogosController();

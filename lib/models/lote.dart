@@ -11,7 +11,7 @@ class Lote {
   final int? estadolotetipoid;
   final double? latitud;
   final double? longitud;
-  final String? fechacreacion;        // <-- ahora opcional
+  final String? fechacreacion; 
   final String? fechamodificacion;
   final String? imagenurl;
 
@@ -26,7 +26,7 @@ class Lote {
     this.estadolotetipoid,
     this.latitud,
     this.longitud,
-    this.fechacreacion,              // <-- ya no required
+    this.fechacreacion,
     this.fechamodificacion,
     this.imagenurl,
   });
@@ -43,7 +43,7 @@ class Lote {
       estadolotetipoid: json['estadolotetipoid'],
       latitud: parseDouble(json['latitud']),
       longitud: parseDouble(json['longitud']),
-      fechacreacion: json['fechacreacion'] as String?,      // <-- seguro
+      fechacreacion: json['fechacreacion'] as String?,
       fechamodificacion: json['fechamodificacion'] as String?,
       imagenurl: json['imagenurl'] as String?,
     );
